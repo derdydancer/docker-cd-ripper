@@ -64,6 +64,7 @@ def music():
     '/rip_disc/<media_type>/<identifier_1>/<identifier_2>/<int:disc_number>',
     methods=['GET', 'POST'])
 def rip_disc(media_type, identifier_1, identifier_2, disc_number):
+    output = None  # Initialize output to store command results
     if request.method == 'POST':
         if media_type == 'audiobook':
             path = os.path.join(AUDIOBOOKS_DIR, identifier_1, identifier_2,
@@ -74,19 +75,25 @@ def rip_disc(media_type, identifier_1, identifier_2, disc_number):
 
         os.makedirs(path, exist_ok=True)
         rip_command = f'cdparanoia -B "{path}/track.wav"'
-        subprocess.run(rip_command, shell=True, check=True)
-        return redirect(
-            url_for('rip_disc',
-                    media_type=media_type,
-                    identifier_1=identifier_1,
-                    identifier_2=identifier_2,
-                    disc_number=disc_number + 1))
+        
+        # Capture the output of the subprocess
+        result = subprocess.run(rip_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        output = result.stdout + result.stderr  # Combine stdout and stderr
+        
+        return render_template(
+            'rip_disc.html',
+            media_type=media_type,
+            identifier_1=identifier_1,
+            identifier_2=identifier_2,
+            disc_number=disc_number + 1,
+            output=output)  # Pass output to the template
 
     return render_template('rip_disc.html',
                            media_type=media_type,
                            identifier_1=identifier_1,
                            identifier_2=identifier_2,
-                           disc_number=disc_number)
+                           disc_number=disc_number,
+                           output=output)  # Ensure output is passed even on GET request
 
 
 # API endpoint for artist name autocomplete

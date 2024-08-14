@@ -18,7 +18,17 @@
             <input type="submit" class="btn btn-success" value="Finish">
         </form>
     </div>
-    
+    <h1>Rip Disc</h1>
+    <form method="POST">
+        <button type="submit">Rip Disc</button>
+    </form>
+
+    {% if output %}
+    <h2>Command Output:</h2>
+    <pre><code>{{ output }}</code></pre>
+    {% else %}
+    <h2>No output</h2>
+    {% endif %}
     {% include 'footer.html' %}
 </body>
 </html>
