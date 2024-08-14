@@ -36,8 +36,8 @@ def audiobook():
         return redirect(
             url_for('rip_disc',
                     media_type='audiobook',
-                    author=author,
-                    title=title,
+                    identifier_1=author,
+                    identifier_2=title,
                     disc_number=1))
     return render_template('audiobook.html')
 
@@ -53,8 +53,8 @@ def music():
         return redirect(
             url_for('rip_disc',
                     media_type='music',
-                    artist=artist,
-                    album=album,
+                    identifier_1=artist,
+                    identifier_2=album,
                     disc_number=1))
     return render_template('music.html', artists=get_artist_names())
 
